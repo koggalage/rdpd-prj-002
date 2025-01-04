@@ -100,7 +100,7 @@
 								<li><a href="cart"><i class="fa fa-shopping-cart"></i> Cart</a></li>
 
 								<?php if(isset($data['user_data'])): ?>
-									<li><a href="<?=ROOT?>logout"><i class="fa fa-lock"></i> LOgout</a></li>
+									<li><a href="<?=ROOT?>logout"><i class="fa fa-lock"></i> Logout</a></li>
 								<?php else: ?>
 									<li><a href="<?=ROOT?>login"><i class="fa fa-lock"></i> Login</a></li>
 								<?php endif; ?>

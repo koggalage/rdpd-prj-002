@@ -130,6 +130,59 @@ Class User
 
     }
 
+    function check_login($redirect = false, $allowed = array())
+    {
+        $db = Database::getInstance();
+
+        if (count($allowed) > 0) {
+
+            $arr['url'] = $_SESSION['user_url'];
+            $query = "select * from users where url_address = :url limit 1";
+            $result = $db->read($query, $arr);
+
+            if (is_array($result)) {
+                $result = $result[0];
+                if (in_array($result->rank, $allowed)) {
+                    return $result;
+                }
+            }
+
+            header("Location: " . ROOT . "login");
+            die;
+        } else {
+
+            if (isset($_SESSION['user_url'])) {
+                $arr = array();
+                $arr['url'] = $_SESSION['user_url'];
+                $query = "select * from users where url_address = :url limit 1";
+
+                $result = $db->read($query, $arr);
+
+                if (is_array($result)) {
+                    return $result[0];
+                }
+            }
+
+            if ($redirect) {
+                header("Location: " . ROOT . "login");
+                die;
+            }
+        }
+
+        return false;
+    }
+
+    public function logout()
+    {
+        if(isset($_SESSION['user_url']))
+        {
+            unset($_SESSION['user_url']);
+        }
+
+        header("Location: " . ROOT . "home");
+                die;
+    }
+
     private function get_random_string_max($lenght)
     {
         $array = [
@@ -150,36 +203,5 @@ Class User
         }
 
         return $text;
-    }
-
-    function check_login()
-    {
-        if(isset($_SESSION['user_url']))
-        {
-            
-            $arr['url'] = $_SESSION['user_url'];
-            $query = "select * from users where url_address = :url limit 1";
-
-            $db = Database::getInstance();
-            $result = $db->read($query, $arr);
-
-            if(is_array($result))
-            {
-                return $result[0];
-            }
-        }
-        
-        return false;
-    }
-
-    public function logout()
-    {
-        if(isset($_SESSION['user_url']))
-        {
-            unset($_SESSION['user_url']);
-        }
-
-        header("Location: " . ROOT . "home");
-                die;
     }
 }
