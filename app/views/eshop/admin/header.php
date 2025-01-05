@@ -7,7 +7,7 @@
     <meta name="author" content="Dashboard">
     <meta name="keyword" content="Dashboard, Bootstrap, Admin, Template, Theme, Responsive, Fluid, Retina">
 
-    <title><?= $data['page_title'] . ' - ' . WEBSITE_TITLE ?></title>
+    <title><?= $page_title . ' - ' . WEBSITE_TITLE ?></title>
 
     <!-- Bootstrap core CSS -->
     <link href="<?= ASSETS . THEME?>/admin/css/bootstrap.css" rel="stylesheet">
