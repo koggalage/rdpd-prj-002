@@ -7,17 +7,23 @@ class Ajax_product extends Controller
         //if form data
         //print_r($_POST);
 
-        $data = file_get_contents("php://input");
-        $data = json_decode($data);
+        //$data = file_get_contents("php://input");
+
+
+        $data = (object)$_POST;
+
+        //show($_POST);
+        //show($_FILES);
 
         if (is_object($data) && isset($data->data_type)) {
 
             $DB = Database::getInstance();
             $product = $this->load_model('Product');
+            $category = $this->load_model('Category');
 
             if ($data->data_type == 'add_product') {
 
-                $check = $product->create($data);
+                $check = $product->create($data, $_FILES);
 
                 if ($_SESSION['error'] != "") {
 
@@ -25,7 +31,7 @@ class Ajax_product extends Controller
                     $_SESSION['error'] = "";
                     $arr['message_type'] = "error";
                     $arr['data'] = "";
-                    $arr['data_type'] = "add_new";
+                    $arr['data_type'] = "add_product";
 
                     echo json_encode($arr);
 
@@ -34,8 +40,8 @@ class Ajax_product extends Controller
                     $arr['message'] = "Product added successfully!";
                     $arr['message_type'] = "info";
                     $prods = $product->get_all();
-                    $arr['data'] = $product->make_table($prods);
-                    $arr['data_type'] = "add_new";
+                    $arr['data'] = $product->make_table($prods, $category);
+                    $arr['data_type'] = "add_product";
 
                     echo json_encode($arr);
 
@@ -53,7 +59,7 @@ class Ajax_product extends Controller
                 $arr['message_type'] = "info";
 
                 $prods = $product->get_all();
-                $arr['data'] = $product->make_table($prods);
+                $arr['data'] = $product->make_table($prods, $category);
 
                 $arr['data_type'] = "disable_row";
 
@@ -67,7 +73,7 @@ class Ajax_product extends Controller
                 $arr['message_type'] = "info";
                 
                 $prods = $product->get_all();
-                $arr['data'] = $product->make_table($prods);
+                $arr['data'] = $product->make_table($prods, $category);
 
                 $arr['data_type'] = "edit_product";
 
@@ -81,7 +87,7 @@ class Ajax_product extends Controller
                 $arr['message_type'] = "info";
                 
                 $prods = $product->get_all();
-                $arr['data'] = $product->make_table($prods);
+                $arr['data'] = $product->make_table($prods, $category);
 
                 $arr['data_type'] = "delete_row";
 

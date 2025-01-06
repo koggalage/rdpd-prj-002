@@ -59,6 +59,24 @@
                             </div>
                         </div>
 
+                        <br><br style="clear: both;">
+
+                        <div class="form-group">
+                            <label class="col-sm-2 col-sm-2 control-label">Parent (Optional):</label>
+                            <div class="col-sm-10">
+                            <select id="parent" name="parent" class="form-control">
+                                    <option></option>
+                                    <?php if (is_array($categories)): ?>
+                                        <?php foreach ($categories as $categ): ?>
+                                            <option value="<?= $categ->id ?>"><?= $categ->category ?></option>
+                                        <?php endforeach; ?>
+                                    <?php endif; ?>
+                                </select>
+                            </div>
+                        </div>
+
+                        <br><br style="clear: both;">
+
                         <button type="button" class="btn btn-warning"
                             style="float: right; position: absolute; bottom: 10px; left: 10px;"
                             onclick="show_add_new(event)">Close</button>
@@ -85,6 +103,24 @@
                                 <input id="category_edit" name="category" type="text" class="form-control" autofocus>
                             </div>
                         </div>
+
+                        <br><br style="clear: both;">
+
+                        <div class="form-group">
+                            <label class="col-sm-2 col-sm-2 control-label">Parent (Optional):</label>
+                            <div class="col-sm-10">
+                            <select id="parent" name="parent" class="form-control">
+                                    <option></option>
+                                    <?php if (is_array($categories)): ?>
+                                        <?php foreach ($categories as $categ): ?>
+                                            <option value="<?= $categ->id ?>"><?= $categ->category ?></option>
+                                        <?php endforeach; ?>
+                                    <?php endif; ?>
+                                </select>
+                            </div>
+                        </div>
+
+                        <br><br style="clear: both;">
 
                         <button type="button" class="btn btn-warning"
                             style="float: right; position: absolute; bottom: 10px; left: 10px;"
