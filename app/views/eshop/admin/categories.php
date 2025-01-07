@@ -109,7 +109,7 @@
                         <div class="form-group">
                             <label class="col-sm-2 col-sm-2 control-label">Parent (Optional):</label>
                             <div class="col-sm-10">
-                            <select id="parent" name="parent" class="form-control">
+                            <select id="parent_edit" name="parent" class="form-control">
                                     <option></option>
                                     <?php if (is_array($categories)): ?>
                                         <?php foreach ($categories as $categ): ?>
@@ -142,6 +142,7 @@
 
                     <tr>
                         <th><i class="fa fa-bullhorn"></i> Category</th>
+                        <th><i class="fa fa-table"></i> Parent</th>
                         <th><i class=" fa fa-edit"></i> Status</th>
                         <th><i class=" fa fa-edit"></i> Action</th>
                         <th></th>
@@ -180,7 +181,7 @@
         }
     }
 
-    function show_edit_category(id, category, e) {
+    function show_edit_category(id, category, parent, e) {
 
         EDIT_ID = id;
         var show_edit_box = document.querySelector(".edit_category");
@@ -190,6 +191,9 @@
 
         var category_input = document.querySelector("#category_edit");
         category_input.value = category;
+
+        var parent_input = document.querySelector("#parent_edit");
+        parent_input.value = parent;
 
         if (show_edit_box.classList.contains("hide")) {
             show_edit_box.classList.remove("hide");
@@ -201,30 +205,46 @@
     }
 
     function collect_data(e) {
-        var category_input = document.querySelector('#category');
 
+        var category_input = document.querySelector('#category');
         if (category_input.value.trim() == "" || !isNaN(category_input.value.trim())) {
             alert("Please enter a valid category name");
         }
 
-        var data = category_input.value.trim();
+        var parent_input = document.querySelector('#parent');
+        if (isNaN(parent_input.value.trim())) {
+            alert("Please select a valid parent");
+        }
+
+        var category = category_input.value.trim();
+        var parent = parent_input.value.trim();
+
         send_data({
-            data: data,
+            category: category,
+            parent: parent,
             data_type: 'add_category'
         })
     }
 
     function collect_edit_data(e) {
-        var category_input = document.querySelector('#category_edit');
 
+        var category_input = document.querySelector('#category_edit');
         if (category_input.value.trim() == "" || !isNaN(category_input.value.trim())) {
             alert("Please enter a valid category name");
         }
 
-        var data = category_input.value.trim();
+        var parent_input = document.querySelector('#parent_edit');
+        if (isNaN(parent_input.value.trim())) {
+            alert("Please select a valid parent");
+        }
+
+        var category = category_input.value.trim();
+        var parent = parent_input.value.trim();
+
         send_data({
             id: EDIT_ID,
-            category: data,
+            category: category,
+            parent: parent,
             data_type: 'edit_category'
         })
     }
@@ -244,7 +264,7 @@
 
     function handle_result(result) {
 
-        //console.log("result", result);
+        console.log("result", result);
         if (result != "") {
 
             var obj = JSON.parse(result);
@@ -263,7 +283,7 @@
                     }
 
                 } else if (obj.data_type == "edit_category") {
-                    show_edit_category(0, '', false);
+                    show_edit_category(0, '', '', false);
 
                     var table_body = document.querySelector("#table_body");
                     table_body.innerHTML = obj.data;

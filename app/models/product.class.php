@@ -112,6 +112,20 @@ class Product
 
                 $edit_args = $prod_row->id . ",'" . $prod_row->description . "'";
 
+                $info = array();
+
+                $info['id'] = $prod_row->id;
+                $info['description'] = $prod_row->description;
+                $info['quantity'] = $prod_row->quantity;
+                $info['price'] = $prod_row->price;
+                $info['category'] = $prod_row->category;
+                $info['image'] = $prod_row->image;
+                $info['image2'] = $prod_row->image2;
+                $info['image3'] = $prod_row->image3;
+                $info['image4'] = $prod_row->image4;
+
+                $info = str_replace('"', "'", json_encode($info));
+
                 $one_cat = $model->get_one($prod_row->category);
 
                 $result .= "<tr>";
@@ -126,7 +140,7 @@ class Product
                         <td><a href="basic_table.html#"><img src="'. ROOT . $prod_row->image.'" style="width: 70px; height: 70px;" /></a></td>
                         <td></td>
                         <td>
-                            <button onclick="show_edit_product(' . $edit_args . ',event)" class="btn btn-primary btn-xs"><i class="fa fa-pencil"></i></button>
+                            <button info="'.$info.'" onclick="show_edit_product(' . $edit_args . ',event)" class="btn btn-primary btn-xs"><i class="fa fa-pencil"></i></button>
                             <button onclick="delete_row(' . $prod_row->id . ')" class="btn btn-danger btn-xs"><i class="fa fa-trash-o "></i></button>
                         </td>
                     ';

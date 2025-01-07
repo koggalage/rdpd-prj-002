@@ -7,6 +7,8 @@ class Ajax_category extends Controller
         //if form data
         //print_r($_POST);
 
+        $_SESSION['error'] = "";
+
         $data = file_get_contents("php://input");
         $data = json_decode($data);
 
@@ -61,7 +63,7 @@ class Ajax_category extends Controller
 
             } else if ($data->data_type == 'edit_category') {
 
-                $category->edit($data->id, $data->category);
+                $category->edit($data);
                 $arr['message'] = "Your row was successfully edited";
                 $_SESSION['error'] = "";
                 $arr['message_type'] = "info";
