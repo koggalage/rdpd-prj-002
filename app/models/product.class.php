@@ -80,12 +80,16 @@ class Product
         return false;
     }
 
-    function edit($id, $description)
+    function edit($data)
     {
+        $arr['id'] = (int) $data->id;
+        $arr['description'] = $data->description;
+        $arr['quantity'] = $data->quantity;
+        $arr['category'] = $data->category;
+        $arr['price'] = $data->price;
+
         $DB = Database::newInstance();
-        $arr['id'] = (int) $id;
-        $arr['description'] = $description;
-        $query = "update products set description = :description where id = :id limit 1";
+        $query = "update products set description = :description, quantity = :quantity,category = :category,price = :price where id = :id limit 1";
         $DB->write($query, $arr);
     }
 

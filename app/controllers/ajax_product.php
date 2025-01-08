@@ -67,7 +67,7 @@ class Ajax_product extends Controller
 
             } else if ($data->data_type == 'edit_product') {
 
-                $product->edit($data->id, $data->product);
+                $product->edit($data, $_FILES);
                 $arr['message'] = "Your row was successfully edited";
                 $_SESSION['error'] = "";
                 $arr['message_type'] = "info";
