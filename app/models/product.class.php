@@ -16,7 +16,7 @@ class Product
         $arr['date'] = date("Y-m-d H:i:s");
         $arr['user_url'] = $_SESSION['user_url'];
 
-        if (!preg_match("/^[a-zA-Z]+$/", trim($arr['description']))) {
+        if (!preg_match("/^[a-zA-Z\s]+$/", trim($arr['description']))) {
             $_SESSION['error'] .= "Please enter a valid description name <br>";
         }
 
@@ -43,32 +43,29 @@ class Product
 
         $folder = "uploads/";
 
-        if (!file_exists($folder))
-        {
+        if (!file_exists($folder)) {
             mkdir($folder, 0777, true);
         }
 
         //check for files
         foreach ($FILES as $key => $img_row) {
-            if ($img_row['error'] == 0 && in_array($img_row['type'], $allowed))
-            {
-                if($img_row['size'] < $size)
-                {
+            if ($img_row['error'] == 0 && in_array($img_row['type'], $allowed)) {
+                if ($img_row['size'] < $size) {
                     $destination = $folder . $img_row['name'];
                     move_uploaded_file($img_row['tmp_name'], $destination);
                     $arr[$key] = $destination;
-                }else{
-                    $_SESSION['error'] .= $key  . " is bigger than required size <br>";
+                } else {
+                    $_SESSION['error'] .= $key . " is bigger than required size <br>";
                 }
             }
         }
 
-        
+
 
         if (!isset($_SESSION['error']) || $_SESSION['error'] == "") {
 
             $query = "insert into products (description, quantity, category, price, date, user_url, image, image2, image3, image4) values (:description,:quantity,:category,:price,:date,:user_url,:image,:image2,:image3,:image4)";
-            
+
             //show($arr);
             $check = $DB->write($query, $arr);
 
@@ -80,17 +77,62 @@ class Product
         return false;
     }
 
-    function edit($data)
+    function edit($data, $FILES)
     {
         $arr['id'] = (int) $data->id;
         $arr['description'] = $data->description;
         $arr['quantity'] = $data->quantity;
         $arr['category'] = $data->category;
         $arr['price'] = $data->price;
+        $images_string = "";
 
-        $DB = Database::newInstance();
-        $query = "update products set description = :description, quantity = :quantity,category = :category,price = :price where id = :id limit 1";
-        $DB->write($query, $arr);
+        if (!preg_match("/^[a-zA-Z\s]+$/", trim($arr['description']))) {
+            $_SESSION['error'] .= "Please enter a valid description name <br>";
+        }
+
+        if (!is_numeric($arr['quantity'])) {
+            $_SESSION['error'] .= "Please enter a valid quantity <br>";
+        }
+
+        if (!is_numeric($arr['category'])) {
+            $_SESSION['error'] .= "Please enter a valid category <br>";
+        }
+
+        if (!is_numeric($arr['price'])) {
+            $_SESSION['error'] .= "Please enter a valid price <br>";
+        }
+
+        $allowed[] = "image/jpeg";
+        $size = 10;
+        $size = ($size * 1024 * 1024);
+
+        $folder = "uploads/";
+
+        if (!file_exists($folder)) {
+            mkdir($folder, 0777, true);
+        }
+
+        //check for files
+        foreach ($FILES as $key => $img_row) {
+            if ($img_row['error'] == 0 && in_array($img_row['type'], $allowed)) {
+                if ($img_row['size'] < $size) {
+                    $destination = $folder . $img_row['name'];
+                    move_uploaded_file($img_row['tmp_name'], $destination);
+                    $arr[$key] = $destination;
+
+                    $images_string .= ",". $key ." = :". $key;
+                } else {
+                    $_SESSION['error'] .= $key . " is bigger than required size <br>";
+                }
+            }
+        }
+
+
+        if (!isset($_SESSION['error']) || $_SESSION['error'] == "") {
+            $DB = Database::newInstance();
+            $query = "update products set description = :description, quantity = :quantity, category = :category, price = :price $images_string where id = :id limit 1";
+            $DB->write($query, $arr);
+        }
     }
 
     function delete($id)
@@ -141,10 +183,10 @@ class Product
                         <td><a href="basic_table.html#">' . $one_cat->category . '</a></td>
                         <td><a href="basic_table.html#">' . $prod_row->price . '</a></td>
                         <td><a href="basic_table.html#">' . date("jS M Y H:i:s", strtotime($prod_row->date)) . '</a></td>
-                        <td><a href="basic_table.html#"><img src="'. ROOT . $prod_row->image.'" style="width: 70px; height: 70px;" /></a></td>
+                        <td><a href="basic_table.html#"><img src="' . ROOT . $prod_row->image . '" style="width: 70px; height: 70px;" /></a></td>
                         <td></td>
                         <td>
-                            <button info="'.$info.'" onclick="show_edit_product(' . $edit_args . ',event)" class="btn btn-primary btn-xs"><i class="fa fa-pencil"></i></button>
+                            <button info="' . $info . '" onclick="show_edit_product(' . $edit_args . ',event)" class="btn btn-primary btn-xs"><i class="fa fa-pencil"></i></button>
                             <button onclick="delete_row(' . $prod_row->id . ')" class="btn btn-danger btn-xs"><i class="fa fa-trash-o "></i></button>
                         </td>
                     ';

@@ -14,7 +14,7 @@
 
     .edit_product {
         width: 500px;
-        height: 600px;
+        height: 650px;
         background-color: #eae8e8;
         box-shadow: 0px 0px 10px #aaa;
         position: absolute;
@@ -39,6 +39,7 @@
         flex: 1;
         width: 10px;
         margin: 2px;
+        height: : 80px;
     }
 </style>
 
@@ -214,7 +215,7 @@
                         <div class="form-group">
                             <label class="col-sm-2 col-sm-2 control-label">Image:</label>
                             <div class="col-sm-10">
-                                <input id="edit_image" name="image" type="file" class="form-control" required>
+                                <input id="edit_image" name="image" type="file" onchange="display_image(this.files[0], this.name)" class="form-control" required>
                             </div>
                         </div>
 
@@ -223,7 +224,7 @@
                         <div class="form-group">
                             <label class="col-sm-2 col-sm-2 control-label">Image2 (Optional):</label>
                             <div class="col-sm-10">
-                                <input id="edit_image2" name="image2" type="file" class="form-control">
+                                <input id="edit_image2" name="image2" type="file" onchange="display_image(this.files[0], this.name)" class="form-control">
                             </div>
                         </div>
 
@@ -232,7 +233,7 @@
                         <div class="form-group">
                             <label class="col-sm-2 col-sm-2 control-label">Image3 (Optional):</label>
                             <div class="col-sm-10">
-                                <input id="edit_image3" name="image3" type="file" class="form-control">
+                                <input id="edit_image3" name="image3" type="file" onchange="display_image(this.files[0], this.name)" class="form-control">
                             </div>
                         </div>
 
@@ -241,7 +242,7 @@
                         <div class="form-group">
                             <label class="col-sm-2 col-sm-2 control-label">Image4 (Optional):</label>
                             <div class="col-sm-10">
-                                <input id="edit_image4" name="image4" type="file" class="form-control">
+                                <input id="edit_image4" name="image4" type="file" onchange="display_image(this.files[0], this.name)" class="form-control">
                             </div>
                         </div>
 
@@ -250,6 +251,8 @@
                         <div class="js-product-images edit_product_images">
 
                         </div>
+
+                        <br><br style="clear: both;">
 
                         <button type="button" class="btn btn-warning"
                             style="float: right; position: absolute; bottom: 10px; left: 10px;"
@@ -316,6 +319,7 @@
     function show_edit_product(id, product, e) {
 
         var show_edit_box = document.querySelector(".edit_product");
+        var edit_description_input = document.querySelector("#edit_description");
 
         if (e) {
             var a = (e.currentTarget.getAttribute('info'));
@@ -326,7 +330,7 @@
             //show_edit_box.style.left = (e.clientX - 700) + "px";
             show_edit_box.style.top = (e.clientY - 100) + "px";
 
-            var edit_description_input = document.querySelector("#edit_description");
+            
             edit_description_input.value = info.description;
 
             var edit_quantity_input = document.querySelector("#edit_quantity");
@@ -344,7 +348,6 @@
             product_images_input.innerHTML += `<img src="<?= ROOT ?>${info.image3}" />`;
             product_images_input.innerHTML += `<img src="<?= ROOT ?>${info.image4}" />`;
         }
-
 
         if (show_edit_box.classList.contains("hide")) {
             show_edit_box.classList.remove("hide");
@@ -565,6 +568,28 @@
             id: id,
             current_state: state
         })
+    }
+
+    function display_image(file, name)
+    {
+        console.log("file", file);
+        console.log("name", name);
+        var index = 0;
+
+          if(name == "image2") {
+            index = 1;
+          } else if(name == "image3") {
+            index = 2;
+          } else if(name == "image4") {
+            index = 3;
+          }
+
+        console.log("index", index);
+
+          var image_holder = document.querySelector(".js-product-images");
+          var images =image_holder.querySelectorAll("IMG");
+
+          images[index].src = URL.createObjectURL(file);
     }
 
     // function send_data_form_data(data) {

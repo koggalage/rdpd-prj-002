@@ -156,4 +156,16 @@
 			</div>
 		</div><!--/header-bottom-->
 	</header><!--/header-->
+
+	<style type="text/css">
+
+		.product-image {
+			transition: all 1s ease;
+		}
+
+		.product-image:hover {
+			transform: scale(1.5);
+		}
+
+	</style>
 	
