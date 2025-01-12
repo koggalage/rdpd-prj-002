@@ -143,7 +143,11 @@
 					</div>
 				</div>
 				
+				<!-- start product -->
 				<div class="col-sm-9 padding-right">
+
+				<?php if($ROW): ?>
+				
 					<div class="product-details"><!--product-details-->
 						<div class="col-sm-5">
 							<div class="view-product">
@@ -483,7 +487,14 @@
 						</div>
 					</div><!--/recommended_items-->
 					
+				
+				<?php else: ?>
+					<div style="padding: 1em; background-color: grey; color: white; margin: 1em; text-align: center;"><h2>That product was not found</h2></div>
+				<?php endif; ?>
+
 				</div>
+				<!-- end product -->
+
 			</div>
 		</div>
 	</section>

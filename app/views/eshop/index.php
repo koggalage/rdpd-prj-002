@@ -223,30 +223,7 @@
 					<?php if (is_array($ROWS)): ?>
 						<?php foreach ($ROWS as $row): ?>
 							<!-- One Product -->
-							<div class="col-sm-4">
-								<div class="product-image-wrapper">
-									<div class="single-products">
-										<div class="productinfo text-center">
-
-											<a href="<?= ROOT ?>product_details/<?= $row->id ?>">
-												<div style="overflow: hidden;"><img class="product-image"
-														src="<?= ROOT . $row->image ?>" alt="" /></div>
-											</a>
-											<h2>$<?= $row->price ?></h2>
-											<p><?= $row->description ?></p>
-											<a href="#" class="btn btn-default add-to-cart"><i
-													class="fa fa-shopping-cart"></i>Add to cart</a>
-										</div>
-
-									</div>
-									<div class="choose">
-										<ul class="nav nav-pills nav-justified">
-											<li><a href="#"><i class="fa fa-plus-square"></i>Add to wishlist</a></li>
-											<li><a href="#"><i class="fa fa-plus-square"></i>Add to compare</a></li>
-										</ul>
-									</div>
-								</div>
-							</div>
+							<?php $this->view("product.inc", $row); ?>
 							<!-- End One Product -->
 						<?php endforeach; ?>
 					<?php endif; ?>

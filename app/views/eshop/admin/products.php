@@ -3,24 +3,14 @@
 <?php $this->view("admin/sidebar", $data); ?>
 
 <style>
-    .add_new {
+    .add_edit_panel {
         width: 500px;
-        height: 550px;
+        height: 600px;
         background-color: #eae8e8;
         box-shadow: 0px 0px 10px #aaa;
         position: absolute;
         padding: 6px;
     }
-
-    .edit_product {
-        width: 500px;
-        height: 650px;
-        background-color: #eae8e8;
-        box-shadow: 0px 0px 10px #aaa;
-        position: absolute;
-        padding: 6px;
-    }
-
 
     .show {
         display: :block;
@@ -59,7 +49,7 @@
                 </h4>
 
                 <!-- add new product -->
-                <div class="add_new hide">
+                <div class="add_new add_edit_panel hide">
 
                     <h4 class="mb"><i class="fa fa-angle-right"></i> Add New Product</h4>
                     <form class="form-horizontal style-form" method="post">
@@ -113,7 +103,7 @@
                         <div class="form-group">
                             <label class="col-sm-2 col-sm-2 control-label">Image:</label>
                             <div class="col-sm-10">
-                                <input id="image" name="image" type="file" class="form-control" required>
+                                <input id="image" name="image" type="file" onchange="display_image(this.files[0], this.name, 'js-product-images-add')" class="form-control" required>
                             </div>
                         </div>
 
@@ -122,7 +112,7 @@
                         <div class="form-group">
                             <label class="col-sm-2 col-sm-2 control-label">Image2 (Optional):</label>
                             <div class="col-sm-10">
-                                <input id="image2" name="image2" type="file" class="form-control">
+                                <input id="image2" name="image2" type="file" onchange="display_image(this.files[0], this.name, 'js-product-images-add')" class="form-control">
                             </div>
                         </div>
 
@@ -131,7 +121,7 @@
                         <div class="form-group">
                             <label class="col-sm-2 col-sm-2 control-label">Image3 (Optional):</label>
                             <div class="col-sm-10">
-                                <input id="image3" name="image3" type="file" class="form-control">
+                                <input id="image3" name="image3" type="file" onchange="display_image(this.files[0], this.name, 'js-product-images-add')" class="form-control">
                             </div>
                         </div>
 
@@ -140,11 +130,16 @@
                         <div class="form-group">
                             <label class="col-sm-2 col-sm-2 control-label">Image4 (Optional):</label>
                             <div class="col-sm-10">
-                                <input id="image4" name="image4" type="file" class="form-control">
+                                <input id="image4" name="image4" type="file" onchange="display_image(this.files[0], this.name, 'js-product-images-add')" class="form-control">
                             </div>
                         </div>
 
-                        <br><br style="clear: both;">
+                        <div class="js-product-images-add edit_product_images">
+                            <img src="">
+                            <img src="">
+                            <img src="">
+                            <img src="">
+                        </div>
 
                         <button type="button" class="btn btn-warning"
                             style="float: right; position: absolute; bottom: 10px; left: 10px;"
@@ -161,7 +156,7 @@
                 <!-- add new product end -->
 
                 <!-- edit product -->
-                <div class="edit_product hide">
+                <div class="edit_product add_edit_panel hide">
 
                     <h4 class="mb"><i class="fa fa-angle-right"></i> Edit Product</h4>
                     <form class="form-horizontal style-form" method="post">
@@ -215,7 +210,7 @@
                         <div class="form-group">
                             <label class="col-sm-2 col-sm-2 control-label">Image:</label>
                             <div class="col-sm-10">
-                                <input id="edit_image" name="image" type="file" onchange="display_image(this.files[0], this.name)" class="form-control" required>
+                                <input id="edit_image" name="image" type="file" onchange="display_image(this.files[0], this.name, 'js-product-images-edit')" class="form-control" required>
                             </div>
                         </div>
 
@@ -224,7 +219,7 @@
                         <div class="form-group">
                             <label class="col-sm-2 col-sm-2 control-label">Image2 (Optional):</label>
                             <div class="col-sm-10">
-                                <input id="edit_image2" name="image2" type="file" onchange="display_image(this.files[0], this.name)" class="form-control">
+                                <input id="edit_image2" name="image2" type="file" onchange="display_image(this.files[0], this.name, 'js-product-images-edit')" class="form-control">
                             </div>
                         </div>
 
@@ -233,7 +228,7 @@
                         <div class="form-group">
                             <label class="col-sm-2 col-sm-2 control-label">Image3 (Optional):</label>
                             <div class="col-sm-10">
-                                <input id="edit_image3" name="image3" type="file" onchange="display_image(this.files[0], this.name)" class="form-control">
+                                <input id="edit_image3" name="image3" type="file" onchange="display_image(this.files[0], this.name, 'js-product-images-edit')" class="form-control">
                             </div>
                         </div>
 
@@ -242,17 +237,13 @@
                         <div class="form-group">
                             <label class="col-sm-2 col-sm-2 control-label">Image4 (Optional):</label>
                             <div class="col-sm-10">
-                                <input id="edit_image4" name="image4" type="file" onchange="display_image(this.files[0], this.name)" class="form-control">
+                                <input id="edit_image4" name="image4" type="file" onchange="display_image(this.files[0], this.name, 'js-product-images-edit')" class="form-control">
                             </div>
                         </div>
 
-                        <br><br style="clear: both;">
-
-                        <div class="js-product-images edit_product_images">
+                        <div class="js-product-images-edit edit_product_images">
 
                         </div>
-
-                        <br><br style="clear: both;">
 
                         <button type="button" class="btn btn-warning"
                             style="float: right; position: absolute; bottom: 10px; left: 10px;"
@@ -552,6 +543,7 @@
     }
 
     function delete_row(id) {
+        console.log('delete_row', id);
         if (!confirm("Are you sure you want to delete this row?")) {
             return;
         }
@@ -570,7 +562,7 @@
         })
     }
 
-    function display_image(file, name)
+    function display_image(file, name, element)
     {
         console.log("file", file);
         console.log("name", name);
@@ -586,7 +578,7 @@
 
         console.log("index", index);
 
-          var image_holder = document.querySelector(".js-product-images");
+          var image_holder = document.querySelector("."+element);
           var images =image_holder.querySelectorAll("IMG");
 
           images[index].src = URL.createObjectURL(file);

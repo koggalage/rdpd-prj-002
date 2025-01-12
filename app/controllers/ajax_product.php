@@ -4,26 +4,26 @@ class Ajax_product extends Controller
 {
     public function index()
     {
-        //if form data
         //print_r($_POST);
-
-        //$data = file_get_contents("php://input");
-
-
-        $data = (object)$_POST;
-
         //show($_POST);
         //show($_FILES);
 
+        if (count($_POST) > 0) {
+            $data = (object)$_POST;
+        }else {
+            $data = file_get_contents("php://input");
+        }
+        
         if (is_object($data) && isset($data->data_type)) {
 
             $DB = Database::getInstance();
             $product = $this->load_model('Product');
             $category = $this->load_model('Category');
+            $image_class = $this->load_model('Image');
 
             if ($data->data_type == 'add_product') {
 
-                $check = $product->create($data, $_FILES);
+                $check = $product->create($data, $_FILES, $image_class);
 
                 if ($_SESSION['error'] != "") {
 
@@ -67,7 +67,7 @@ class Ajax_product extends Controller
 
             } else if ($data->data_type == 'edit_product') {
 
-                $product->edit($data, $_FILES);
+                $product->edit($data, $_FILES, $image_class);
                 $arr['message'] = "Your row was successfully edited";
                 $_SESSION['error'] = "";
                 $arr['message_type'] = "info";

@@ -3,7 +3,7 @@
 class Product
 {
 
-    function create($DATA, $FILES)
+    function create($DATA, $FILES, $image_class = null)
     {
         $_SESSION['error'] = "";
 
@@ -15,8 +15,9 @@ class Product
         $arr['price'] = $DATA->price;
         $arr['date'] = date("Y-m-d H:i:s");
         $arr['user_url'] = $_SESSION['user_url'];
+        $arr['slag'] = $this->str_to_url($DATA->description);
 
-        if (!preg_match("/^[a-zA-Z\s]+$/", trim($arr['description']))) {
+        if (!preg_match("/^[a-zA-Z 0-9._\-,]+$/", trim($arr['description']))) {
             $_SESSION['error'] .= "Please enter a valid description name <br>";
         }
 
@@ -31,6 +32,14 @@ class Product
         if (!is_numeric($arr['price'])) {
             $_SESSION['error'] .= "Please enter a valid price <br>";
         }
+
+        $slag_arr['slag'] = $arr['slag'];
+        $query = "select slag from products where slag = :slag limit 1";
+            $check = $DB->read($query, $slag_arr);
+
+            if ($check) {
+                $arr['slag'] .= "-" . rand(0,99999);
+            }
 
         $arr['image'] = "";
         $arr['image2'] = "";
@@ -51,9 +60,11 @@ class Product
         foreach ($FILES as $key => $img_row) {
             if ($img_row['error'] == 0 && in_array($img_row['type'], $allowed)) {
                 if ($img_row['size'] < $size) {
-                    $destination = $folder . $img_row['name'];
+                    $destination = $folder . $image_class->generate_filename(60) . ".jpg";
                     move_uploaded_file($img_row['tmp_name'], $destination);
                     $arr[$key] = $destination;
+
+                    $image_class->resize_image($destination, $destination, 1500, 1500);
                 } else {
                     $_SESSION['error'] .= $key . " is bigger than required size <br>";
                 }
@@ -64,9 +75,7 @@ class Product
 
         if (!isset($_SESSION['error']) || $_SESSION['error'] == "") {
 
-            $query = "insert into products (description, quantity, category, price, date, user_url, image, image2, image3, image4) values (:description,:quantity,:category,:price,:date,:user_url,:image,:image2,:image3,:image4)";
-
-            //show($arr);
+            $query = "insert into products (description, quantity, category, price, date, user_url, image, image2, image3, image4, slag) values (:description,:quantity,:category,:price,:date,:user_url,:image,:image2,:image3,:image4, :slag)";
             $check = $DB->write($query, $arr);
 
             if ($check) {
@@ -77,7 +86,7 @@ class Product
         return false;
     }
 
-    function edit($data, $FILES)
+    function edit($data, $FILES, $image_class = null)
     {
         $arr['id'] = (int) $data->id;
         $arr['description'] = $data->description;
@@ -116,9 +125,10 @@ class Product
         foreach ($FILES as $key => $img_row) {
             if ($img_row['error'] == 0 && in_array($img_row['type'], $allowed)) {
                 if ($img_row['size'] < $size) {
-                    $destination = $folder . $img_row['name'];
+                    $destination = $folder . $image_class->generate_filename(60) . ".jpg";
                     move_uploaded_file($img_row['tmp_name'], $destination);
                     $arr[$key] = $destination;
+                    $image_class->resize_image($destination, $destination, 1500, 1500);
 
                     $images_string .= ",". $key ." = :". $key;
                 } else {
@@ -195,6 +205,16 @@ class Product
         }
 
         return $result;
+    }
+
+    public function str_to_url($url) {
+        $url = preg_replace('~[^\\pL0-9_]+~u', '-', $url);
+        $url = trim($url, "-");
+        $url = iconv("utf-8", "us-ascii//TRANSLIT", $url);
+        $url = strtolower($url);
+        $url = preg_replace('~[^-a-z0-9_]+~', '', $url);
+
+        return $url;
     }
 
 }
