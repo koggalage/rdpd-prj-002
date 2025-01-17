@@ -49,8 +49,39 @@ Class Checkout extends Controller {
             }
         }
 
-        rsort($ROWS); //reverse sort
+        if (is_array($ROWS))
+        {
+            rsort($ROWS); //reverse sort
+        }
+        
         $data['ROWS'] = $ROWS;
+
+        //get countries
+        $countries = $this->load_model('Countries');
+        $data['countries'] = $countries->get_countries();
+
+        if(count($_POST) > 0) {
+            $sessionid = session_id();
+            $user_url = "";
+
+            if (isset($_SESSION['ueser_url'])) {
+                $user_url = $_SESSION['ueser_url'];
+            }
+
+            $order = $this->load_model('Order');
+            $order->save_order($_POST, $ROWS, $user_url, $sessionid);
+
+            $data['errors'] = $order->errors;
+
+            //header("Location:" . ROOT . "thank_you");
+            //die;
+        }
+
+        //clear $_SESSION
+        // foreach ($_SESSION as $key => $value) {
+        //     unset($_SESSION[$key]);
+        // }
+
         $this->view("checkout", $data);
     }
 

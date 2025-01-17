@@ -49,7 +49,10 @@ Class Cart extends Controller {
             }
         }
 
-        rsort($ROWS); //reverse sort
+        if (is_array($ROWS)) {
+            rsort($ROWS); //reverse sort
+        }
+        
         $data['ROWS'] = $ROWS;
         $this->view("cart", $data);
     }
