@@ -21,7 +21,7 @@ class Order extends Controller
                 }
             }
         }
-        return;
+
         $total = 0;
 
         foreach ($ROWS as $key => $row) {
@@ -80,6 +80,47 @@ class Order extends Controller
                 $result = $db->write($query, $data);
             }
         }
+    }
+
+    public function get_orders_by_user($user_url)
+    {
+        $db = Database::newInstance();
+
+        $orders = false;
+        $data['user_url'] = $user_url;
+
+        $query = "select * from orders where user_url = :user_url order by id desc limit 100";
+
+        $orders = $db->read($query, $data);
+
+        return $orders;
+    }
+
+    public function get_all_orders()
+    {
+        $db = Database::newInstance();
+
+        $orders = false;
+
+        $query = "select * from orders order by id desc limit 100";
+
+        $orders = $db->read($query);
+
+        return $orders;
+    }
+
+    public function get_order_details($id)
+    {
+        $db = Database::newInstance();
+
+        $details = false;
+        $data['id'] = addslashes($id);
+
+        $query = "select * from order_details where orderid = :id order by id desc";
+
+        $details = $db->read($query, $data);
+
+        return $details;
     }
 
 }

@@ -2,7 +2,12 @@
 
 <?php
 	if (isset($errors) && count($errors) > 0) {
-		print_r($errors);
+		
+		echo "<div>";
+		foreach ($errors as $error) {
+			echo "<div class='alert alert-danger' style='padding: 5px; max-width: 500px; margin: auto; text-align: center;'>$error</div>";
+		}
+		echo "</div>";
 	}
 ?>
 

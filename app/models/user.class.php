@@ -127,7 +127,19 @@ Class User
 
     function get_user($url)
     {
+        $db = Database::newInstance();
 
+        $arr = array();
+        $arr['url'] = addslashes($url);
+        $query = "select * from users where url_address = :url limit 1";
+
+        $result = $db->read($query, $arr);
+
+        if (is_array($result)) {
+            return $result[0];
+        }
+
+        return false;
     }
 
     function check_login($redirect = false, $allowed = array())

@@ -64,8 +64,8 @@ Class Checkout extends Controller {
             $sessionid = session_id();
             $user_url = "";
 
-            if (isset($_SESSION['ueser_url'])) {
-                $user_url = $_SESSION['ueser_url'];
+            if (isset($_SESSION['user_url'])) {
+                $user_url = $_SESSION['user_url'];
             }
 
             $order = $this->load_model('Order');
