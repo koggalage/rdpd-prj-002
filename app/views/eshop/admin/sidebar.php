@@ -24,9 +24,6 @@
                     <i class="fa fa-barcode"></i>
                     <span>Products</span>
                 </a>
-                <ul class="sub">
-                    <li><a href="<?= ROOT ?>admin/products">View Product</a></li>
-                </ul>
             </li>
 
             <li class="sub-menu">
@@ -34,9 +31,6 @@
                     <i class="fa fa-list-alt"></i>
                     <span>Categories</span>
                 </a>
-                <ul class="sub">
-                    <li><a href="<?= ROOT ?>admin/categories">View Categories</a></li>
-                </ul>
             </li>
 
             <li class="sub-menu">

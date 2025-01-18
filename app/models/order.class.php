@@ -4,24 +4,45 @@ class Order extends Controller
 {
     public $errors = array();
 
-    function save_order($POST, $ROWS, $user_url, $sessionid)
+    function validate($POST)
     {
+        $this->errors = array();
 
         foreach ($POST as $key => $value) {
 
             if ($key == "country") {
                 if ($value == "" || $value == "-- Country --" ) {
-                    $this->errors[] = "Please eneter a valid country";
+                    $this->errors[] = "Please enter a valid country";
                 }
             }
 
             if ($key == "state") {
                 if ($value == "" || $value == "-- State / Province / Region --" ) {
-                    $this->errors[] = "Please eneter a valid state";
+                    $this->errors[] = "Please enter a valid state";
+                }
+            }
+
+            if ($key == "address1") {
+                if (empty($value)) {
+                    $this->errors[] = "Please enter a valid address1";
+                }
+            }
+
+            if ($key == "postal_code") {
+                if (empty($value)) {
+                    $this->errors[] = "Please enter a valid postal code";
+                }
+            }
+
+            if ($key == "mobile_phone") {
+                if (empty($value)) {
+                    $this->errors[] = "Please enter a valid mobile phone";
                 }
             }
         }
-
+    }
+    function save_order($POST, $ROWS, $user_url, $sessionid)
+    {
         $total = 0;
 
         foreach ($ROWS as $key => $row) {
@@ -38,10 +59,10 @@ class Order extends Controller
             $data['sessionid'] = $sessionid;
             $data['delivery_address'] = $POST['address1'] . " " . $POST['address2'];
             $data['total'] = $total;
-            $country_obj = $countries->get_country($POST['country']);
-            $data['country'] = $country_obj->country;
-            $state_obj = $countries->get_state($POST['state']);
-            $data['state'] = $state_obj->state;
+            //$country_obj = $countries->get_country($POST['country']);
+            $data['country'] = $POST['country'];
+            //$state_obj = $countries->get_state($POST['state']);
+            $data['state'] = $POST['state'];
             $data['zip'] = $POST['postal_code'];
             $data['tax'] = 0;
             $data['shipping'] = 0;

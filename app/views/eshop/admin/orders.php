@@ -58,86 +58,87 @@
                         <h4> Customer: <?= $order->user->name ?> </h4>
 
                         <!-- order details -->
+                        <div style="display: flex;">
+                            <table class="table" style="flex: 1; margin: 4px;">
+                                <tr>
+                                    <th>Country</th>
+                                    <td> <?= $order->country ?> </td>
+                                </tr>
+                                <tr>
+                                    <th>State</th>
+                                    <td> <?= $order->state ?> </td>
+                                </tr>
+                                <tr>
+                                    <th>Delivery Address</th>
+                                    <td> <?= $order->delivery_address ?> </td>
+                                </tr>
+                            </table>
+
+                            <table class="table" style="flex: 1; margin: 4px;">
+                                <tr>
+                                    <th>Home Phone</th>
+                                    <td> <?= $order->home_phone ?> </td>
+                                </tr>
+                                <tr>
+                                    <th>Mobile Phone</th>
+                                    <td> <?= $order->mobile_phone ?> </td>
+                                </tr>
+                                <tr>
+                                    <th>Date</th>
+                                    <td> <?= $order->date ?> </td>
+                                </tr>
+                            </table>
+                        </div>
+                        <!-- end order details -->
+
+                        <hr>
+
+                        <h4>Order Summary</h4>
+
                         <table class="table">
 
-                            <tr>
-                                <th>Country</th>
-                                <td> <?= $order->country ?> </td>
-                            </tr>
-                            <tr>
-                                <th>State</th>
-                                <td> <?= $order->state ?> </td>
-                            </tr>
+                            <thead>
 
-                            <tr>
-                                <th>Delivery Address</th>
-                                <td> <?= $order->delivery_address ?> </td>
-                            </tr>
+                                <tr>
+                                    <th>Qty</th>
+                                    <th>Description</th>
+                                    <th>Amount</th>
+                                    <th>Total</th>
+                                </tr>
 
-                            <tr>
-                                <th>Home Phone</th>
-                                <td> <?= $order->home_phone ?> </td>
-                            </tr>
+                            </thead>
 
-                            <tr>
-                                <th>Mobile Phone</th>
-                                <td> <?= $order->mobile_phone ?> </td>
-                            </tr>
+                            <?php if (isset($order->details) && is_array($order->details)): ?>
 
-                            <tr>
-                                <th>Date</th>
-                                <td> <?= $order->date ?> </td>
-                            </tr>
+                                <?php foreach ($order->details as $detail): ?>
 
+                                    <tbody>
+                                        <td><?= $detail->qty ?></td>
+                                        <td><?= $detail->description ?></td>
+                                        <td><?= $detail->amount ?></td>
+                                        <td><?= $detail->total ?></td>
+                                    </tbody>
+
+                                <?php endforeach; ?>
+
+                            <?php else: ?>
+
+                                <div>No order details were found for this order</div>
+
+                            <?php endif; ?>
+                        </table>
+
+                        <h3 class="pull-right"> Grand Total: <?= $order->grand_total ?> </h3>
+
+                    </div>
+
+                </td>
             </tr>
 
-    </table>
+        <?php endforeach; ?>
 
-    <hr>
-    <h4>Order Summary</h4>
-    <!-- end order details -->
+    </tbody>
 
-    <table class="table">
-
-        <thead>
-            <tr>
-                <th>Qty</th>
-                <th>Description</th>
-                <th>Amount</th>
-                <th>Total</th>
-            </tr>
-        </thead>
-
-        <?php if (isset($order->details) && is_array($order->details)): ?>
-
-            <?php foreach ($order->details as $detail): ?>
-
-                <tbody>
-                    <td><?= $detail->qty ?></td>
-                    <td><?= $detail->description ?></td>
-                    <td><?= $detail->amount ?></td>
-                    <td><?= $detail->total ?></td>
-                </tbody>
-
-            <?php endforeach; ?>
-
-        <?php else: ?>
-
-            <div>No order details were found for this order</div>
-
-        <?php endif; ?>
-    </table>
-
-    <h3 class="pull-right"> Grand Total: <?= $order->grand_total ?> </h3>
-
-    </div>
-
-    </td>
-    </tr>
-
-<?php endforeach; ?>
-
-</tbody>
 </table>
 
 <script type="text/javascript">
