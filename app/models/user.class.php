@@ -125,18 +125,52 @@ Class User
         $_SESSION['error'] = $this->error;
     }
 
-    function get_user($url)
+    function get_user($url_address)
     {
         $db = Database::newInstance();
 
         $arr = array();
-        $arr['url'] = addslashes($url);
-        $query = "select * from users where url_address = :url limit 1";
+        $arr['url_address'] = addslashes($url_address);
+        $query = "select * from users where url_address = :url_address limit 1";
+        
+        $result = $db->read($query, $arr);
+        
+        if (is_array($result)) {
+            return $result[0];
+        }
+
+        return false;
+    }
+
+    function get_customers()
+    {
+        $db = Database::newInstance();
+
+        $arr = array();
+        $arr['rank'] = "customer";
+        $query = "select * from users where rank = :rank";
 
         $result = $db->read($query, $arr);
 
         if (is_array($result)) {
-            return $result[0];
+            return $result;
+        }
+
+        return false;
+    }
+
+    function get_admins()
+    {
+        $db = Database::newInstance();
+
+        $arr = array();
+        $arr['rank'] = "admin";
+        $query = "select * from users where rank = :rank";
+
+        $result = $db->read($query, $arr);
+
+        if (is_array($result)) {
+            return $result;
         }
 
         return false;

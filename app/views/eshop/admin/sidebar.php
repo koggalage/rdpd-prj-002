@@ -13,45 +13,49 @@
             <h5 class="centered" style="font-size: 11px;"><?= $data['user_data']->email ?></h5>
 
             <li class="sub-menu">
-                <a href="javascript:;">
+                <a <?= (isset($current_page) && $current_page == "dashboard") ? ' class="active" ' : ''; ?> href="javascript:;">
                     <i class="fa fa-dashboard"></i>
                     <span>Dashboard</span>
                 </a>
             </li>
 
             <li class="sub-menu">
-                <a href="<?= ROOT ?>admin/products">
+                <a <?= (isset($current_page) && $current_page == "products") ? ' class="active" ' : ''; ?> href="<?= ROOT ?>admin/products">
                     <i class="fa fa-barcode"></i>
                     <span>Products</span>
                 </a>
             </li>
 
             <li class="sub-menu">
-                <a href="<?= ROOT ?>admin/categories">
+                <a <?= (isset($current_page) && $current_page == "categories") ? ' class="active" ' : ''; ?> href="<?= ROOT ?>admin/categories">
                     <i class="fa fa-list-alt"></i>
                     <span>Categories</span>
                 </a>
             </li>
 
             <li class="sub-menu">
-                <a href="<?= ROOT ?>admin/orders">
+                <a <?= (isset($current_page) && $current_page == "orders") ? ' class="active" ' : ''; ?> href="<?= ROOT ?>admin/orders">
                     <i class="fa fa-reorder"></i>
                     <span>Order</span>
                 </a>
             </li>
 
             <li class="sub-menu">
-                <a href="<?= ROOT ?>admin/settings">
+                <a <?= (isset($current_page) && $current_page == "settings") ? ' class="active" ' : ''; ?> href="<?= ROOT ?>admin/settings">
                     <i class="fa fa-cogs"></i>
                     <span>Settings</span>
                 </a>
                 <ul class="sub">
                     <li><a href="<?= ROOT ?>admin/settings/slider_images">Slider Images</a></li>
                 </ul>
+
+                <ul class="sub">
+                    <li><a href="<?= ROOT ?>admin/settings/socials">Social Links / Contacts</a></li>
+                </ul>
             </li>
 
             <li class="sub-menu">
-                <a href="<?= ROOT ?>admin/users">
+                <a <?= (isset($current_page) && $current_page == "users") ? ' class="active" ' : ''; ?> href="<?= ROOT ?>admin/users">
                     <i class="fa fa-cogs"></i>
                     <span>Users</span>
                 </a>

@@ -37,6 +37,7 @@
 
 			<!-- profile data -->
 
+			<?php if (is_object($profile_data)): ?>
 
 			<div class="col-md-4 mb"
 				style="flex: 1; background-color: #eee; text-align: center; box-shadow: 0px 0px 20px #aaa; border: solid thin #ddd;">
@@ -46,12 +47,12 @@
 						<h5>MY ACCOUNT</h5>
 					</div>
 					<p><img src="<?= ASSETS . THEME ?>/admin/img/ui-zac.jpg" class="img-circle" width="80"></p>
-					<p id="value_text"><b><?= $data['user_data']->name ?></b></p>
+					<p id="value_text"><b><?= $profile_data->name ?></b></p>
 
 					<div class="row">
 						<div class="col-md-6">
 							<p id="user_text" class="small mt">MEMBER SINCE</p>
-							<p id="value_text"><?= date("jS M Y", strtotime($data['user_data']->date)) ?></p>
+							<p id="value_text"><?= date("jS M Y", strtotime($profile_data->date)) ?></p>
 						</div>
 						<div class="col-md-6">
 							<p id="user_text" class="small mt">TOTAL SPEND</p>
@@ -158,8 +159,11 @@
 				</table>
 
 			<?php else: ?>
-				<div>This user has no orders yet</div>
+				<h3 style="text-align: center;">This user has no orders yet</h3>
+			<?php endif; ?>
 
+			<?php else: ?>
+				<h3 style="text-align: center;">Sorry! that profile could not be found</h3>
 			<?php endif; ?>
 
 		</div>

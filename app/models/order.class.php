@@ -117,6 +117,18 @@ class Order extends Controller
         return $orders;
     }
 
+    public function get_orders_count($user_url)
+    {
+        $db = Database::newInstance();
+        $data['user_url'] = $user_url;
+
+        $query = "select id from orders where user_url = :user_url";
+        $result = $db->read($query, $data);
+ 
+        $orders = is_array($result) ? count($result) : 0;
+        return $orders;
+    }
+
     public function get_all_orders()
     {
         $db = Database::newInstance();

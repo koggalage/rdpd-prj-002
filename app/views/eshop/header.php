@@ -33,8 +33,8 @@
 					<div class="col-sm-6">
 						<div class="contactinfo">
 							<ul class="nav nav-pills">
-								<li><a href="#"><i class="fa fa-phone"></i> +2 95 01 88 821</a></li>
-								<li><a href="#"><i class="fa fa-envelope"></i> info@domain.com</a></li>
+								<li><a href="#"><i class="fa fa-phone"></i> <?= Settings::phone_number() ?> </a></li>
+								<li><a href="#"><i class="fa fa-envelope"></i> <?= Settings::email() ?> </a></li>
 								<?php if(isset($data['user_data'])): ?>
 									<li><a href="#"><i class="fa fa-user"></i> <?= $data['user_data']->name ?> </a></li>
 								<?php endif; ?>
@@ -44,11 +44,11 @@
 					<div class="col-sm-6">
 						<div class="social-icons pull-right">
 							<ul class="nav navbar-nav">
-								<li><a href="#"><i class="fa fa-facebook"></i></a></li>
-								<li><a href="#"><i class="fa fa-twitter"></i></a></li>
-								<li><a href="#"><i class="fa fa-linkedin"></i></a></li>
-								<li><a href="#"><i class="fa fa-dribbble"></i></a></li>
-								<li><a href="#"><i class="fa fa-google-plus"></i></a></li>
+								<li><a target="_new" href="<?= Settings::facebook_link() ?>"><i class="fa fa-facebook"></i></a></li>
+								<li><a target="_new" href="<?= Settings::twitter_link() ?>"><i class="fa fa-twitter"></i></a></li>
+								<li><a target="_new" href="<?= Settings::linkedin_link() ?>"><i class="fa fa-linkedin"></i></a></li>
+								<li><a target="_new" href="<?= Settings::website_link() ?>"><i class="fa fa-dribbble"></i></a></li>
+								<li><a target="_new" href="<?= Settings::google_plus_link() ?>"><i class="fa fa-google-plus"></i></a></li>
 							</ul>
 						</div>
 					</div>
@@ -61,31 +61,9 @@
 				<div class="row">
 					<div class="col-sm-4">
 						<div class="logo pull-left">
-							<a href="index"><img src="<?= ASSETS . THEME?>/images/home/logo.png" alt="" /></a>
+							<a href="<?= ROOT ?>"><img src="<?= ASSETS . THEME?>/images/home/logo.png" alt="" /></a>
 						</div>
-						<div class="btn-group pull-right">
-							<div class="btn-group">
-								<button type="button" class="btn btn-default dropdown-toggle usa" data-toggle="dropdown">
-									USA
-									<span class="caret"></span>
-								</button>
-								<ul class="dropdown-menu">
-									<li><a href="#">Canada</a></li>
-									<li><a href="#">UK</a></li>
-								</ul>
-							</div>
-							
-							<div class="btn-group">
-								<button type="button" class="btn btn-default dropdown-toggle usa" data-toggle="dropdown">
-									DOLLAR
-									<span class="caret"></span>
-								</button>
-								<ul class="dropdown-menu">
-									<li><a href="#">Canadian Dollar</a></li>
-									<li><a href="#">Pound</a></li>
-								</ul>
-							</div>
-						</div>
+
 					</div>
 					<div class="col-sm-8">
 						<div class="shop-menu pull-right">
@@ -126,32 +104,24 @@
 						</div>
 						<div class="mainmenu pull-left">
 							<ul class="nav navbar-nav collapse navbar-collapse">
-								<li><a href="<?= ROOT ?>index" class="active">Home</a></li>
-								<li class="dropdown"><a href="#">Shop<i class="fa fa-angle-down"></i></a>
-                                    <ul role="menu" class="sub-menu">
-                                        <li><a href="<?= ROOT ?>shop">Products</a></li>
-										<li><a href="<?= ROOT ?>product-details">Product Details</a></li> 
-										<li><a href="<?= ROOT ?>checkout">Checkout</a></li> 
-										<li><a href="<?= ROOT ?>cart">Cart</a></li> 
-										<li><a href="<?= ROOT ?>login">Login</a></li> 
-                                    </ul>
-                                </li> 
-								<li class="dropdown"><a href="<?= ROOT ?>blog">Blog<i class="fa fa-angle-down"></i></a>
-                                    <ul role="menu" class="sub-menu">
-                                        <li><a href="<?= ROOT ?>blog">Blog List</a></li>
-										<li><a href="<?= ROOT ?>blog-single">Blog Single</a></li>
-                                    </ul>
-                                </li> 
-								<li><a href="<?= ROOT ?>404">404</a></li>
-								<li><a href="<?= ROOT ?>contact-us">Contact</a></li>
+								<li><a href="<?= ROOT ?>index" class="<?= $page_title == 'Home' ? 'active' : ''; ?>">Home</a></li>
+								<li class="dropdown"><a href="<?= ROOT ?>shop" class="<?= $page_title == 'Shop' ? 'active' : ''; ?>">Shop</a></li> 
+								<li class="dropdown"><a href="<?= ROOT ?>blog" class="<?= $page_title == 'Blog' ? 'active' : ''; ?>">Blog</a></li> 
+								<li><a href="<?= ROOT ?>contact-us" class="<?= $page_title == 'Contact' ? 'active' : ''; ?>">Contact</a></li>
 							</ul>
 						</div>
 					</div>
+
+					<?php if (isset($show_search)): ?>
 					<div class="col-sm-3">
+						<form method="get">
 						<div class="search_box pull-right">
-							<input type="text" placeholder="Search"/>
+							<input name="find" type="text" placeholder="Search"/>
 						</div>
+						</form>
 					</div>
+					<?php endif; ?>
+					
 				</div>
 			</div>
 		</div><!--/header-bottom-->

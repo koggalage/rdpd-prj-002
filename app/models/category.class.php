@@ -61,6 +61,14 @@ class Category
         return $data[0];
     }
 
+    function get_one_by_name($name)
+    {
+        $name = addslashes($name);
+        $DB = Database::newInstance();
+        $data = $DB->read("select * from categories where category like :name limit 1", ["name"=>$name]);
+        return $data[0];
+    }
+
     function make_table($cats)
     {
         $result = "";
