@@ -49,8 +49,11 @@ class Category
 
     function get_all()
     {
+        $limit = 10;
+        $offset = Page::get_offset($limit);
+        
         $DB = Database::newInstance();
-        return $DB->read("select * from categories order by id desc");
+        return $DB->read("select * from categories order by views desc limit $limit offset $offset");
     }
 
     function get_one($id)
@@ -66,6 +69,11 @@ class Category
         $name = addslashes($name);
         $DB = Database::newInstance();
         $data = $DB->read("select * from categories where category like :name limit 1", ["name"=>$name]);
+
+        if (is_array($data)) {
+            $DB->write("update categories set views = views + 1 where id = :id limit 1", ["id"=>$data[0]->id]);
+        }
+        
         return $data[0];
     }
 
@@ -80,7 +88,7 @@ class Category
                 $cat_row->disabled = $cat_row->disabled ? "Disabled" : "Enabled";
 
                 $args = $cat_row->id.",'".$cat_row->disabled."'";
-                $edit_args = $cat_row->id.",'".$cat_row->category."',".$cat_row->parent;
+                $edit_args = $cat_row->id.",'".addslashes($cat_row->category)."',".$cat_row->parent;
 
                 $parent = "";
 

@@ -1,8 +1,13 @@
 <?php
 
-Class Shop extends Controller {
+class Shop extends Controller
+{
     public function index()
     {
+        //pagination formula
+        $limit = 10;
+        $offset = Page::get_offset($limit);
+
         //check if its a search
         $search = false;
         if (isset($_GET['find'])) {
@@ -10,29 +15,40 @@ Class Shop extends Controller {
             $search = true;
         }
 
+        if (isset($_GET['search'])) {
+            //show($_GET);
+            $search = true;
+        }
+
         $User = $this->load_model('User');
         $image_class = $this->load_model('Image');
         $user_data = $User->check_login();
 
-        if(is_object($user_data))
-        {
+        if (is_object($user_data)) {
             $data['user_data'] = $user_data;
         }
 
         $DB = Database::newInstance();
 
         if ($search) {
-            $arr['description'] = "%" . $find . "%";
-            $ROWS = $DB->read("select * from products where description like :description", $arr);
-        }else {
-            $ROWS = $DB->read("select * from products");
+            if (isset($_GET['find'])) {
+                $arr['description'] = "%" . $find . "%";
+                $ROWS = $DB->read("select * from products where description like :description limit $limit offset $offset", $arr);
+            } else {
+                //Advanced Search
+                //generate a search query
+                $query = Search::make_query($_GET, $limit, $offset);
+                $ROWS = $DB->read($query);
+            }
+        } else {
+            $ROWS = $DB->read("select * from products limit $limit offset $offset");
         }
-        
-        
+
+
         $data['page_title'] = "Shop";
 
-        if($ROWS) {
-            foreach  ($ROWS as $key => $row) {
+        if ($ROWS) {
+            foreach ($ROWS as $key => $row) {
                 $ROWS[$key]->image = $image_class->get_thumb_post($ROWS[$key]->image);
             }
         }
@@ -49,13 +65,16 @@ Class Shop extends Controller {
 
     public function category($cat_find = '')
     {
+        //pagination formula
+        $limit = 10;
+        $offset = Page::get_offset($limit);
+
         $User = $this->load_model('User');
         $category = $this->load_model('Category');
         $image_class = $this->load_model('Image');
         $user_data = $User->check_login();
 
-        if(is_object($user_data))
-        {
+        if (is_object($user_data)) {
             $data['user_data'] = $user_data;
         }
 
@@ -68,12 +87,12 @@ Class Shop extends Controller {
             $cat_id = $check->id;
         }
 
-        $ROWS = $DB->read("select * from products where category = :cat_id", ["cat_id"=>$cat_id]);
-        
+        $ROWS = $DB->read("select * from products where category = :cat_id limit $limit offset $offset", ["cat_id" => $cat_id]);
+
         $data['page_title'] = "Shop";
 
-        if($ROWS) {
-            foreach  ($ROWS as $key => $row) {
+        if ($ROWS) {
+            foreach ($ROWS as $key => $row) {
                 $ROWS[$key]->image = $image_class->get_thumb_post($ROWS[$key]->image);
             }
         }
@@ -86,4 +105,5 @@ Class Shop extends Controller {
 
         $this->view("shop", $data);
     }
+
 }

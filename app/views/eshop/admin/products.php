@@ -5,11 +5,12 @@
 <style>
     .add_edit_panel {
         width: 500px;
-        height: 600px;
+        height: 650px;
         background-color: #eae8e8;
         box-shadow: 0px 0px 10px #aaa;
         position: absolute;
         padding: 6px;
+        z-index: 100;
     }
 
     .show {
@@ -36,6 +37,91 @@
 <div class="">
     <div class="col-md-12">
         <div class="content-panel">
+
+        <h4>Advanced Search</h4>
+        <!-- searchbox -->
+
+        <style>
+            .my-table {
+                background-color: #eee;
+            }
+
+            .my-table th {
+                background-color: #ddd;
+            }
+        </style>
+         <form method="get">
+         <table class="my-table table table-condensed">
+
+            <tr> 
+                <th> Description </th>
+                <td> 
+                    <input type="text" value="<?php Search::get_sticky('textbox', 'description') ?>" class="form-control" name="description" placeholder="Type what to search for" autofocus="true"> 
+                </td>
+
+                <th> Category </th>
+                <td> 
+                    <select class="form-control" name="category">
+                        <option>--Select Category--</option>
+                        <?php Search::get_categories('category') ?>
+                    </select> 
+                </td>
+           </tr>
+
+           <tr> 
+                <th> Brands </th>
+                <td colspan="3">
+                <?php Search::get_brands() ?>
+                </td>
+           </tr>
+
+           <tr> 
+                <th> Price </th>
+                <td>
+
+                    <div class="form-inline">
+                        <label>Min:</label>
+                        <input type="number" class="form-control" value="<?php Search::get_sticky('number', 'min-price') ?>" step="0.01" name="min-price" > 
+
+                        <label>Max:</label>
+                        <input type="number" class="form-control" value="<?php Search::get_sticky('number', 'max-price') ?>" step="0.01" name="max-price" > 
+                    </div>
+
+                </td>
+
+                <th> Quantity </th>
+                <td> 
+
+                    <div class="form-inline">
+                        <label>Min:</label>
+                        <input type="number" class="form-control" value="<?php Search::get_sticky('number', 'min-qty') ?>" step="1" name="min-qty" > 
+
+                        <label>Max:</label>
+                        <input type="number" class="form-control" value="<?php Search::get_sticky('number', 'max-qty') ?>" step="1" name="max-qty" > 
+                    </div>
+
+                </td>
+           </tr>
+
+           <tr> 
+                <th> Year </th>
+                <td> 
+                    <select class="form-control" name="year">
+                        <option>--Select Year--</option>
+                        <?php Search::get_years('year') ?>
+                    </select> 
+                </td>
+           </tr>
+                <td colspan="4">
+                    <input type="submit" name="search" value="Search" class="btn btn-success pull-right" > 
+                </td>
+           <tr>
+
+           </tr>
+
+         </table>
+         </form>
+        <!-- end searchbox -->
 
             <table class="table table-striped table-advance table-hover">
 
@@ -82,6 +168,22 @@
                                     <?php if (is_array($categories)): ?>
                                         <?php foreach ($categories as $categ): ?>
                                             <option value="<?= $categ->id ?>"><?= $categ->category ?></option>
+                                        <?php endforeach; ?>
+                                    <?php endif; ?>
+                                </select>
+                            </div>
+                        </div>
+
+                        <br><br style="clear: both;">
+
+                        <div class="form-group">
+                            <label class="col-sm-2 col-sm-2 control-label">Brand:</label>
+                            <div class="col-sm-10">
+                                <select id="brand" name="brand" class="form-control" required>
+                                    <option></option>
+                                    <?php if (is_array($brands)): ?>
+                                        <?php foreach ($brands as $brand): ?>
+                                            <option value="<?= $brand->id ?>"><?= $brand->brand ?></option>
                                         <?php endforeach; ?>
                                     <?php endif; ?>
                                 </select>
@@ -266,11 +368,13 @@
                     <tr>
                         <th><i class="fa fa-key"></i> Product Id</th>
                         <th><i class="fa fa-bullhorn"></i> Product Name</th>
-                        <th><i class=" fa fa-edit"></i> Quantity</th>
-                        <th><i class=" fa fa-edit"></i> Category</th>
-                        <th><i class=" fa fa-edit"></i> Price</th>
-                        <th><i class=" fa fa-edit"></i> Date</th>
-                        <th><i class=" fa fa-edit"></i> Action</th>
+                        <th><i class="fa fa-edit"></i> Quantity</th>
+                        <th><i class="fa fa-edit"></i> Category</th>
+                        <th><i class="fa fa-edit"></i> Brand</th>
+                        <th><i class="fa fa-edit"></i> Price</th>
+                        <th><i class="fa fa-edit"></i> Date</th>
+                        <th><i class="fa fa-edit"></i> Image</th>
+                        <th><i class="fa fa-edit"></i> Action</th>
                         <th></th>
                     </tr>
 
@@ -279,6 +383,8 @@
                 <tbody id="table_body">
 
                     <?php echo $tbl_rows; ?>
+
+                    <tr><td colspan="8"><?php Page::show_links() ?></td></tr>
 
                 </tbody>
 
@@ -369,6 +475,12 @@
             return;
         }
 
+        var brand_input = document.querySelector('#brand');
+        if (brand_input.value.trim() == "" || isNaN(brand_input.value.trim())) {
+            alert("Please select a valid brand");
+            return;
+        }
+
         var price_input = document.querySelector('#price');
         if (price_input.value.trim() == "" || isNaN(price_input.value.trim())) {
             alert("Please enter a valid price");
@@ -402,6 +514,7 @@
         formdata.append('description', product_input.value.trim());
         formdata.append('quantity', quantity_input.value.trim());
         formdata.append('category', category_input.value.trim());
+        formdata.append('brand', brand_input.value.trim());
         formdata.append('price', price_input.value.trim());
         formdata.append('image', image_input.files[0]);
         formdata.append('data_type', 'add_product');

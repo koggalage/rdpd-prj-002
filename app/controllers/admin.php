@@ -19,6 +19,10 @@ class Admin extends Controller
 
     public function categories(): void
     {
+        //pagination formula
+        $limit = 10;
+        $offset = Page::get_offset($limit);
+
         $User = $this->load_model('User');
         $user_data = $User->check_login(true, ["admin"]);
 
@@ -27,7 +31,7 @@ class Admin extends Controller
         }
 
         $DB = Database::newInstance();
-        $categories_all = $DB->read("select * from categories order by id desc");
+        $categories_all = $DB->read("select * from categories order by id desc limit $limit offset $offset");
         $categories = $DB->read("select * from categories where disabled = 0  order by id desc");
 
 
@@ -42,6 +46,16 @@ class Admin extends Controller
 
     public function products(): void
     {
+        $search = false;
+        if (isset($_GET['search'])) {
+            //show($_GET);
+            $search = true;
+        }
+
+        //pagination formula
+        $limit = 10;
+        $offset = Page::get_offset($limit);
+
         $User = $this->load_model('User');
         $user_data = $User->check_login(true, ["admin"]);
 
@@ -50,9 +64,26 @@ class Admin extends Controller
         }
 
         $DB = Database::newInstance();
-        $products = $DB->read("select * from products order by id desc");
 
-        $categories = $DB->read("select * from categories where disabled = 0  order by id desc");
+        if ($search) {
+            //generate a search query
+            $query = Search::make_query($_GET, $limit, $offset);
+            $products = $DB->read($query);
+        } else {
+            $products = $DB->read("SELECT prod.*,
+                                            brands.brand as brand_name,
+                                            cat.category as category_name
+                                      FROM products as prod
+                                      join brands on brands.id = prod.brand 
+                                      join categories as cat on cat.id = prod.category 
+                                      order by prod.id desc 
+                                      limit $limit 
+                                      offset $offset");
+        }
+
+
+        $categories = $DB->read("select * from categories where disabled = 0  order by views desc");
+        $brands = $DB->read("select * from brands where disabled = 0  order by views desc");
 
         $product = $this->load_model("Product");
         $category = $this->load_model("Category");
@@ -61,6 +92,7 @@ class Admin extends Controller
 
         $data['tbl_rows'] = $tbl_rows;
         $data['categories'] = $categories;
+        $data['brands'] = $brands;
 
         $data['current_page'] = "products";
         $data['page_title'] = "Admin - Products";
@@ -159,32 +191,32 @@ class Admin extends Controller
             $data['settings'] = $Settings->get_all_settings();
         } else if ($type == "slider_images") {
 
-            
+
             $data['action'] = "show";
 
             $Slider = $this->load_model('Slider');
 
-            
-                //read all slider images
-                $data['rows'] = $Slider->get_all();
-                
+
+            //read all slider images
+            $data['rows'] = $Slider->get_all();
+
             if (isset($_GET['action']) && $_GET['action'] == "add") {
 
                 $data['action'] = "add";
 
                 //if new row was posted
                 if (count($_POST) > 0) {
-                    
+
                     $Image = $this->load_model('Image');
 
                     $data['errors'] = $Slider->create($_POST, $_FILES, $Image);
-                    
+
                     $data['POST'] = $_POST;
                     header("Location: " . ROOT . "admin/settings/slider_images");
                     die;
                 }
 
-                
+
 
             } else if (isset($_GET['action']) && $_GET['action'] == "edit") {
                 $data['action'] = "edit";
@@ -193,7 +225,7 @@ class Admin extends Controller
                 if (isset($_GET['id'])) {
                     $data['id'] = $_GET['id'];
                 }
-                
+
             } else if (isset($_GET['action']) && $_GET['action'] == "delete") {
                 $data['action'] = "add";
             } else if (isset($_GET['action']) && $_GET['action'] == "delete_confirmed") {
@@ -205,6 +237,135 @@ class Admin extends Controller
         $data['current_page'] = "settings";
         $data['page_title'] = "Admin - $type";
         $this->view("admin/settings", $data);
+    }
+
+    public function messages(): void
+    {
+        $User = $this->load_model('User');
+        $Message = $this->load_model('Message');
+
+        $user_data = $User->check_login(true, ["admin"]);
+
+        if (is_object($user_data)) {
+            $data['user_data'] = $user_data;
+        }
+
+        $mode = "read";
+
+        if (isset($_GET['delete'])) {
+            $mode = "delete";
+        }
+
+        if (isset($_GET['delete_confirmed'])) {
+            $mode = "delete_confirmed";
+            $id = $_GET['delete_confirmed'];
+            $messages = $Message->delete($id);
+        }
+
+        if ($mode == "delete") {
+            $id = $_GET['delete'];
+            $messages = $Message->get_one($id);
+        } else {
+            $messages = $Message->get_all();
+        }
+
+        $data['mode'] = $mode;
+        $data['messages'] = $messages;
+        $data['current_page'] = "messages";
+        $data['page_title'] = "Admin - Messages";
+        $this->view("admin/messages", $data);
+    }
+
+    public function blogs(): void
+    {
+        $User = $this->load_model('User');
+        $Post = $this->load_model('Post');
+        $Image = $this->load_model('Image');
+
+        $user_data = $User->check_login(true, ["admin"]);
+
+        if (is_object($user_data)) {
+            $data['user_data'] = $user_data;
+        }
+
+        $mode = "read";
+
+        if (isset($_GET['edit'])) {
+            $mode = "edit";
+        }
+
+        if (isset($_GET['delete'])) {
+            $mode = "delete";
+        }
+
+        if (isset($_GET['add_new'])) {
+            $mode = "add_new";
+        }
+
+        if (isset($_GET['delete_confirmed'])) {
+            $mode = "delete_confirmed";
+            $id = $_GET['delete_confirmed'];
+            $blogs = $Post->delete($id);
+        }
+
+        if ($mode == "edit") {
+            $id = $_GET['edit'];
+            $blogs = $Post->get_one($id);
+
+            $data['POST'] = (array) $blogs;
+        } else if ($mode == "delete") {
+            $id = $_GET['delete'];
+            $blogs = $Post->get_one($id);
+
+            if ($blogs) {
+
+                if (file_exists($blogs->image)) {
+                    $blogs->image = $Image->get_thumb_post($blogs->image);
+                }
+
+                $blogs->user_data = $User->get_user($blogs->user_url);
+            }
+
+            $data['POST'] = (array) $blogs;
+        } else {
+            $blogs = $Post->get_all();
+
+            if ($blogs) {
+
+                foreach ($blogs as $key => $row) {
+                    if (file_exists($blogs[$key]->image)) {
+                        $blogs[$key]->image = $Image->get_thumb_post($blogs[$key]->image);
+                    }
+
+                    $blogs[$key]->user_data = $User->get_user($blogs[$key]->user_url);
+                }
+            }
+        }
+
+        //if something was posted
+        if (count($_POST) > 0) {
+
+
+            if ($mode == "edit") {
+                $Post->edit($_POST, $_FILES, $Image);
+            } else {
+                $Post->create($_POST, $_FILES, $Image);
+            }
+
+
+            if (isset($_SESSION['error']) && $_SESSION['error'] != "") {
+                $data['errors'] = $_SESSION['error'];
+                $data['POST'] = $_POST;
+            } else {
+                redirect("admin/blogs");
+            }
+        }
+
+        $data['mode'] = $mode;
+        $data['blogs'] = $blogs;
+        $data['current_page'] = "blogs";
+        $data['page_title'] = "Admin - Blog Posts";
+        $this->view("admin/blogs", $data);
     }
 
 }
